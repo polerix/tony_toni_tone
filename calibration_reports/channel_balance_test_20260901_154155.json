@@ -1,0 +1,25 @@
+{
+  "test_name": "Dual Channel Balance Test",
+  "timestamp": "2026-09-01 15:41:55",
+  "tested_levels_db": [
+    -6.0,
+    0.0
+  ],
+  "details": [
+    {
+      "db_level": -6.0,
+      "voltage_v": 0.6265,
+      "left_target_v": 0.6265,
+      "right_target_v": 0.6265,
+      "status": "PASS"
+    },
+    {
+      "db_level": 0.0,
+      "voltage_v": 1.25,
+      "left_target_v": 1.25,
+      "right_target_v": 1.25,
+      "status": "PASS"
+    }
+  ],
+  "overall_status": "PASS"
+}

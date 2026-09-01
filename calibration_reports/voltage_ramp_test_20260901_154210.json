@@ -1,0 +1,8 @@
+{
+  "test_name": "Voltage Ramp Test",
+  "timestamp": "2026-09-01 15:42:10",
+  "duration_sec": 4.0,
+  "max_voltage_v": 1.4375,
+  "sample_count": 81,
+  "status": "PASS"
+}

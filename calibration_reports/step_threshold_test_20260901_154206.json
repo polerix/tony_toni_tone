@@ -1,0 +1,99 @@
+{
+  "test_name": "Step Threshold Test",
+  "timestamp": "2026-09-01 15:42:06",
+  "v_ref": 1.25,
+  "total_steps": 10,
+  "overall_status": "PASS",
+  "details": [
+    {
+      "step": 1,
+      "db_level": -27,
+      "target_voltage_v": 0.0558,
+      "pwm_duty_pct": 1.69,
+      "expected_active_count": 1,
+      "expected_led_pattern": "1000000000",
+      "status": "PASS"
+    },
+    {
+      "step": 2,
+      "db_level": -24,
+      "target_voltage_v": 0.0789,
+      "pwm_duty_pct": 2.39,
+      "expected_active_count": 2,
+      "expected_led_pattern": "1100000000",
+      "status": "PASS"
+    },
+    {
+      "step": 3,
+      "db_level": -21,
+      "target_voltage_v": 0.1114,
+      "pwm_duty_pct": 3.38,
+      "expected_active_count": 3,
+      "expected_led_pattern": "1110000000",
+      "status": "PASS"
+    },
+    {
+      "step": 4,
+      "db_level": -18,
+      "target_voltage_v": 0.1574,
+      "pwm_duty_pct": 4.77,
+      "expected_active_count": 4,
+      "expected_led_pattern": "1111000000",
+      "status": "PASS"
+    },
+    {
+      "step": 5,
+      "db_level": -15,
+      "target_voltage_v": 0.2223,
+      "pwm_duty_pct": 6.74,
+      "expected_active_count": 5,
+      "expected_led_pattern": "1111100000",
+      "status": "PASS"
+    },
+    {
+      "step": 6,
+      "db_level": -12,
+      "target_voltage_v": 0.314,
+      "pwm_duty_pct": 9.51,
+      "expected_active_count": 6,
+      "expected_led_pattern": "1111110000",
+      "status": "PASS"
+    },
+    {
+      "step": 7,
+      "db_level": -9,
+      "target_voltage_v": 0.4435,
+      "pwm_duty_pct": 13.44,
+      "expected_active_count": 7,
+      "expected_led_pattern": "1111111000",
+      "status": "PASS"
+    },
+    {
+      "step": 8,
+      "db_level": -6,
+      "target_voltage_v": 0.6265,
+      "pwm_duty_pct": 18.98,
+      "expected_active_count": 8,
+      "expected_led_pattern": "1111111100",
+      "status": "PASS"
+    },
+    {
+      "step": 9,
+      "db_level": -3,
+      "target_voltage_v": 0.8849,
+      "pwm_duty_pct": 26.82,
+      "expected_active_count": 9,
+      "expected_led_pattern": "1111111110",
+      "status": "PASS"
+    },
+    {
+      "step": 10,
+      "db_level": 0,
+      "target_voltage_v": 1.25,
+      "pwm_duty_pct": 37.88,
+      "expected_active_count": 10,
+      "expected_led_pattern": "1111111111",
+      "status": "PASS"
+    }
+  ]
+}

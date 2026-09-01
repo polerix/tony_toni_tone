@@ -1,0 +1,953 @@
+/* ==========================================================================
+   LM3915 Dual VU Meter Calibration Bench - 1960s Laboratory Design System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+  /* Color Palette - 1960s Instrument Console */
+  --chassis-bg: #1c2024;
+  --chassis-dark: #121518;
+  --chassis-metal: #2a3038;
+  --panel-slate: #242b33;
+  --panel-border: #3b4552;
+  --panel-inset: #161a1e;
+  
+  --bezel-aluminum: linear-gradient(135deg, #8b939c 0%, #4a525d 50%, #2e353f 100%);
+  --knob-bakelite: radial-gradient(circle at 35% 35%, #383a3d 0%, #1a1b1d 60%, #0d0e0f 100%);
+  --brass-accent: #c5a059;
+  
+  /* Phosphor Colors */
+  --p31-green: #00ff66;
+  --p31-glow: rgba(0, 255, 102, 0.4);
+  --p7-amber: #ffb000;
+  --p7-glow: rgba(255, 176, 0, 0.4);
+  --crt-bg: #050e09;
+  --crt-graticule: rgba(0, 255, 102, 0.18);
+  
+  /* LED Colors */
+  --led-green-off: #0b2414;
+  --led-green-on: #00ff44;
+  --led-green-glow: rgba(0, 255, 68, 0.6);
+  
+  --led-yellow-off: #2c2507;
+  --led-yellow-on: #ffcc00;
+  --led-yellow-glow: rgba(255, 204, 0, 0.6);
+  
+  --led-red-off: #2b0b0b;
+  --led-red-on: #ff2233;
+  --led-red-glow: rgba(255, 34, 51, 0.7);
+
+  /* Indicator Jewels */
+  --jewel-red-off: #3d0505;
+  --jewel-red-on: #ff1122;
+  --jewel-red-glow: 0 0 15px #ff1122, 0 0 30px rgba(255, 17, 34, 0.6);
+  
+  /* Typography */
+  --font-mono: 'Share Tech Mono', 'Fira Code', monospace;
+  --font-display: 'Orbitron', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: #0d0f12;
+  background-image: 
+    radial-gradient(circle at 50% 20%, #1e242c 0%, #0d0f12 80%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 3px);
+  color: #d1d9e6;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Main Chassis & Frame
+   ========================================================================== */
+
+.bench-chassis {
+  width: 100%;
+  max-width: 1280px;
+  background: var(--panel-slate);
+  border: 4px solid #101215;
+  border-radius: 12px;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+}
+
+/* Rack Handles & Machined Corner Screws */
+.chassis-corner-screw {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, #6b7582 30%, #303742 70%);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.6);
+}
+.chassis-corner-screw::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 2px;
+  width: 10px;
+  height: 2px;
+  background: #1a1e24;
+  transform: rotate(35deg);
+}
+
+.screw-tl { top: 12px; left: 12px; }
+.screw-tr { top: 12px; right: 12px; }
+.screw-bl { bottom: 12px; left: 12px; }
+.screw-br { bottom: 12px; right: 12px; }
+
+/* Chassis Header Bar */
+.chassis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--panel-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.model-plate {
+  background: linear-gradient(135deg, #1c2024 0%, #0d0f12 100%);
+  border: 2px solid var(--brass-accent);
+  border-radius: 4px;
+  padding: 6px 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.model-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: #f0f4f8;
+  text-transform: uppercase;
+}
+
+.model-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--brass-accent);
+  letter-spacing: 1px;
+}
+
+/* Jewel Power Pilot Lamp */
+.power-assembly {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.jewel-lamp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.jewel-lamp {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #7a1414 0%, var(--jewel-red-off) 70%);
+  border: 2px solid #5a6370;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.jewel-lamp::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 7px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+}
+
+.jewel-lamp.active {
+  background: radial-gradient(circle at 35% 35%, #ffaabb 0%, var(--jewel-red-on) 60%, #880000 100%);
+  box-shadow: var(--jewel-red-glow), inset 0 1px 2px rgba(255,255,255,0.8);
+}
+
+.jewel-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: #8b95a5;
+  text-transform: uppercase;
+}
+
+/* Power Toggle Switch */
+.toggle-switch-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  width: 44px;
+  height: 68px;
+  background: #14171a;
+  border: 2px solid #3d4652;
+  border-radius: 6px;
+  position: relative;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bat-handle {
+  width: 14px;
+  height: 34px;
+  background: linear-gradient(90deg, #606873 0%, #d8e0ea 40%, #7d8794 80%, #3e444c 100%);
+  border-radius: 7px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(12px);
+}
+
+.toggle-switch-container.active .bat-handle {
+  transform: translateY(-12px);
+}
+
+/* ==========================================================================
+   Main Bench Layout Grid
+   ========================================================================== */
+
+.bench-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .bench-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Instrument Module Containers */
+.instrument-panel {
+  background: var(--panel-inset);
+  border: 2px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  color: var(--brass-accent);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title i {
+  font-style: normal;
+  color: #6b788a;
+}
+
+/* ==========================================================================
+   1960s CRT Oscilloscope Display
+   ========================================================================== */
+
+.crt-bezel-outer {
+  background: linear-gradient(145deg, #1b2026 0%, #0c0e10 100%);
+  border: 4px solid #2e3640;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 
+    inset 0 4px 10px rgba(0,0,0,0.9),
+    0 4px 12px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.crt-screen-container {
+  width: 100%;
+  height: 280px;
+  background-color: var(--crt-bg);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.95);
+  border: 2px solid #122218;
+}
+
+/* Glass Refraction & Scanlines Overlay */
+.crt-glass-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 50%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0px, rgba(0, 0, 0, 0.25) 1px, transparent 1px, transparent 2px);
+  border-radius: 10px;
+  z-index: 10;
+}
+
+canvas#scopeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CRT Scope Control Sub-Panel */
+.scope-controls {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+/* ==========================================================================
+   Bakelite Rotary Knobs System
+   ========================================================================== */
+
+.knob-control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.knob-outer {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #111417;
+  border: 2px solid #3c4654;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: grab;
+}
+
+.knob-outer:active {
+  cursor: grabbing;
+}
+
+.knob-dial {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--knob-bakelite);
+  border: 1px solid #485260;
+  position: relative;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.9);
+  transition: transform 0.05s linear;
+}
+
+/* Fluted ridges on bakelite knob */
+.knob-dial::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.12);
+}
+
+.knob-pointer {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 16px;
+  background: #f0f4f8;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(255,255,255,0.8);
+}
+
+.knob-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.8px;
+  color: #a0acbd;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.knob-value-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--p31-green);
+  background: #0d1115;
+  border: 1px solid #232b35;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Small Knob Variant */
+.knob-control-group.small .knob-outer {
+  width: 44px;
+  height: 44px;
+}
+.knob-control-group.small .knob-dial {
+  width: 36px;
+  height: 36px;
+}
+.knob-control-group.small .knob-pointer {
+  height: 12px;
+  width: 2px;
+}
+
+/* Mode Buttons Pill Group */
+.mode-btn-group {
+  display: flex;
+  gap: 4px;
+  background: #101418;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+}
+
+.mode-btn {
+  background: #1a2026;
+  border: 1px solid #333d4a;
+  color: #8c98a8;
+  padding: 5px 9px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mode-btn.active {
+  background: #2b3846;
+  color: var(--p31-green);
+  border-color: var(--p31-green);
+}
+
+/* ==========================================================================
+   Audio Tone Generator Module
+   ========================================================================== */
+
+.waveform-selector {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  background: #111417;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+}
+
+.wave-btn {
+  background: #1a2026;
+  border: 1px solid #333d4a;
+  color: #8c98a8;
+  padding: 6px 4px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.wave-btn svg {
+  width: 18px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.wave-btn:hover {
+  background: #27303a;
+  color: #d8e2ee;
+}
+
+.wave-btn.active {
+  background: #2e3a47;
+  color: var(--p31-green);
+  border-color: var(--p31-green);
+  box-shadow: 0 0 8px var(--p31-glow);
+}
+
+.generator-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Frequency Calibration Presets */
+.preset-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preset-pill {
+  background: #13181e;
+  border: 1px solid #2e3745;
+  color: #9cb0c7;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-pill:hover, .preset-pill.active {
+  background: #25313f;
+  color: var(--p7-amber);
+  border-color: var(--p7-amber);
+}
+
+/* Auto Sweep Button */
+.sweep-toggle-btn {
+  background: linear-gradient(180deg, #2b3542 0%, #171d24 100%);
+  border: 1px solid #4a5666;
+  color: #e0e8f2;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.sweep-toggle-btn.active {
+  background: linear-gradient(180deg, #8a2020 0%, #521010 100%);
+  border-color: #ff3344;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 51, 68, 0.5);
+}
+
+/* Input Source Toggle */
+.source-toggle-btn {
+  background: #141b22;
+  border: 1px solid #334050;
+  color: #a0b2c6;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.source-toggle-btn.mic {
+  background: #291e0a;
+  border-color: var(--p7-amber);
+  color: var(--p7-amber);
+}
+
+/* ==========================================================================
+   Master Level & Illuminated Bat Switches (SOLO / MUTE)
+   ========================================================================== */
+
+.master-routing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.channel-switches-group {
+  display: flex;
+  gap: 16px;
+  background: #101418;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+}
+
+.channel-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ch-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #7d8b9e;
+}
+
+.bat-btn {
+  width: 48px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid #3a4554;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  background: #1a2026;
+  color: #647285;
+}
+
+.bat-btn.solo.active {
+  background: #005522;
+  color: #00ff66;
+  border-color: #00ff66;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+}
+
+.bat-btn.mute.active {
+  background: #660011;
+  color: #ff3344;
+  border-color: #ff3344;
+  box-shadow: 0 0 10px rgba(255, 51, 68, 0.5);
+}
+
+/* DC Detector Pod */
+.dc-detector-pod {
+  background: #0b0e11;
+  border: 1px solid #252e38;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pod-title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #6e7d91;
+  text-transform: uppercase;
+}
+
+.pod-value {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--p7-amber);
+}
+
+/* ==========================================================================
+   9-Band Frequency Graphic EQ
+   ========================================================================== */
+
+.eq-bank-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #101317;
+  padding: 14px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  overflow-x: auto;
+}
+
+.eq-slider-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 150px;
+  min-width: 32px;
+}
+
+.eq-slider-track {
+  height: 100px;
+  width: 6px;
+  background: #1c232c;
+  border-radius: 3px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.eq-slider-thumb {
+  width: 22px;
+  height: 12px;
+  background: linear-gradient(180deg, #707b8c 0%, #303742 100%);
+  border: 1px solid #94a1b3;
+  border-radius: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  cursor: pointer;
+}
+
+.eq-slider-thumb::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background: var(--brass-accent);
+}
+
+.eq-freq-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #8090a3;
+}
+
+.eq-db-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--p31-green);
+}
+
+.btn-flat-eq {
+  background: #1c242e;
+  border: 1px solid #384556;
+  color: #a8b8cc;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-flat-eq:hover {
+  background: #2d3b4b;
+  color: #fff;
+}
+
+/* ==========================================================================
+   LM3915 Dual VU LED Meter Emulation
+   ========================================================================== */
+
+.meters-dual-container {
+  display: flex;
+  justify-content: space-around;
+  background: #0b0e11;
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid #232b35;
+}
+
+.meter-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.meter-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: #92a2b5;
+}
+
+.led-bar-ladder {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 5px;
+  background: #07090b;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #1a222a;
+}
+
+.led-segment {
+  width: 48px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,0.6);
+  position: relative;
+  transition: background-color 0.05s ease, box-shadow 0.05s ease;
+}
+
+/* Green LEDs (1 to 6) */
+.led-segment.green {
+  background-color: var(--led-green-off);
+}
+.led-segment.green.active {
+  background-color: var(--led-green-on);
+  box-shadow: 0 0 10px var(--led-green-glow);
+}
+
+/* Yellow LEDs (7 to 8) */
+.led-segment.yellow {
+  background-color: var(--led-yellow-off);
+}
+.led-segment.yellow.active {
+  background-color: var(--led-yellow-on);
+  box-shadow: 0 0 10px var(--led-yellow-glow);
+}
+
+/* Red LEDs (9 to 10) */
+.led-segment.red {
+  background-color: var(--led-red-off);
+}
+.led-segment.red.active {
+  background-color: var(--led-red-on);
+  box-shadow: 0 0 12px var(--led-red-glow);
+}
+
+.meter-readout-pod {
+  background: #12171d;
+  border: 1px solid #2c3745;
+  border-radius: 4px;
+  padding: 4px 8px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--p31-green);
+  width: 100%;
+}
+
+/* Mode Switch: Bar vs Dot */
+.meter-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #8c9cb0;
+}
+
+/* ==========================================================================
+   Reference Table & Drawer Modal
+   ========================================================================== */
+
+.drawer-toggle-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  background: #181f26;
+  border: 1px solid var(--panel-border);
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.drawer-toggle-title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--brass-accent);
+  letter-spacing: 1px;
+}
+
+.guide-drawer-content {
+  display: none;
+  background: #11151a;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #b0bfd1;
+}
+
+.guide-drawer-content.open {
+  display: block;
+}
+
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.ref-table th, .ref-table td {
+  border: 1px solid #28323e;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.ref-table th {
+  background: #1a222b;
+  color: var(--brass-accent);
+}
+
+.ref-table tr:nth-child(even) {
+  background: #151b22;
+}
+
+.badge-green { color: var(--led-green-on); }
+.badge-yellow { color: var(--led-yellow-on); }
+.badge-red { color: var(--led-red-on); }
+
+/* Interactive Trimmer Simulator */
+.trimmer-sim-box {
+  background: #171d24;
+  border: 1px dashed var(--brass-accent);
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 14px;
+}
+
+.trimmer-sim-header {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--brass-accent);
+  margin-bottom: 8px;
+}

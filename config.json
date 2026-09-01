@@ -1,0 +1,22 @@
+{
+  "hardware": {
+    "button_gpio": 17,
+    "status_led_gpio": 27,
+    "left_channel_pwm_gpio": 18,
+    "right_channel_pwm_gpio": 19,
+    "pwm_frequency_hz": 100000,
+    "max_output_voltage": 3.3
+  },
+  "lm3915": {
+    "v_ref": 1.25,
+    "db_steps": [-27, -24, -21, -18, -15, -12, -9, -6, -3, 0],
+    "tolerance_pct": 5.0,
+    "mode": "bar"
+  },
+  "test_suite": {
+    "ramp_duration_sec": 5.0,
+    "step_hold_sec": 1.5,
+    "balance_test_voltage": 1.25,
+    "output_dir": "./calibration_reports"
+  }
+}

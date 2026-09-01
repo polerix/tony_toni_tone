@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUL-10 LM3915 Dual VU Meter Calibration Bench</title>
+  <meta name="description" content="1960s Laboratory Dual VU Meter Calibration Bench and CRT Oscilloscope for Raspberry Pi 4 audio calibration.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Main Rack Chassis Frame -->
+  <div class="bench-chassis">
+    
+    <!-- Machined Corner Chassis Screws -->
+    <div class="chassis-corner-screw screw-tl"></div>
+    <div class="chassis-corner-screw screw-tr"></div>
+    <div class="chassis-corner-screw screw-bl"></div>
+    <div class="chassis-corner-screw screw-br"></div>
+
+    <!-- Chassis Header Bar -->
+    <header class="chassis-header">
+      <div class="brand-badge">
+        <div class="model-plate">
+          <div class="model-title">AUL-10 LM3915 BENCH</div>
+          <div class="model-subtitle">DUAL VU METER CALIBRATION CONSOLE • RASPBERRY PI 4</div>
+        </div>
+      </div>
+
+      <div class="power-assembly">
+        <!-- Red Faceted Jewel Pilot Lamp -->
+        <div class="jewel-lamp-container">
+          <div class="jewel-lamp" id="powerJewel"></div>
+          <div class="jewel-label">MAINS</div>
+        </div>
+
+        <!-- Power Bat Toggle Switch -->
+        <div class="toggle-switch-container" id="powerToggleBtn">
+          <div class="toggle-switch">
+            <div class="bat-handle"></div>
+          </div>
+          <div class="jewel-label">POWER</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Bench Layout Grid -->
+    <main class="bench-grid">
+      
+      <!-- Left Column: CRT Oscilloscope & Graphic EQ -->
+      <section class="left-column" style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- 1960s Dual-Trace CRT Oscilloscope -->
+        <div class="instrument-panel">
+          <div class="panel-header">
+            <div class="panel-title"><i>[01]</i> 1960s DUAL-TRACE CRT OSCILLOSCOPE</div>
+            <div class="mode-btn-group">
+              <button class="mode-btn active" data-scopemode="dual">DUAL TRACE</button>
+              <button class="mode-btn" data-scopemode="ch1">CH1 (P31)</button>
+              <button class="mode-btn" data-scopemode="ch2">CH2 (P7)</button>
+              <button class="mode-btn" data-scopemode="xy">X-Y LISSAJOUS</button>
+            </div>
+          </div>
+
+          <!-- CRT Display Monitor -->
+          <div class="crt-bezel-outer">
+            <div class="crt-screen-container">
+              <div class="crt-glass-glare"></div>
+              <canvas id="scopeCanvas" width="600" height="280"></canvas>
+            </div>
+          </div>
+
+          <!-- Scope Control Knobs -->
+          <div class="scope-controls">
+            <div class="knob-control-group small" id="timebaseKnob">
+              <div class="knob-label">TIME / DIV</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="timebaseBadge">1.0 ms</div>
+            </div>
+
+            <div class="knob-control-group small" id="voltsDivKnob">
+              <div class="knob-label">VOLTS / DIV</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="voltsDivBadge">0.5 V</div>
+            </div>
+
+            <div class="knob-control-group small" id="triggerKnob">
+              <div class="knob-label">TRIGGER LOCK</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="triggerBadge">ZERO-X</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9-Band Frequency Graphic EQ -->
+        <div class="instrument-panel">
+          <div class="panel-header">
+            <div class="panel-title"><i>[02]</i> 9-BAND GRAPHIC EQUALIZER</div>
+            <button class="btn-flat-eq" id="btnFlatEq">RESET FLAT (0 dB)</button>
+          </div>
+
+          <div class="eq-bank-container">
+            <!-- 9 Frequencies: 63Hz, 125Hz, 250Hz, 500Hz, 1kHz, 2kHz, 4kHz, 8kHz, 16kHz -->
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">63Hz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">125Hz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">250Hz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">500Hz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">1kHz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">2kHz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">4kHz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">8kHz</div>
+            </div>
+
+            <div class="eq-slider-col">
+              <div class="eq-db-label">0dB</div>
+              <div class="eq-slider-track"><div class="eq-slider-thumb" style="top: 50%;"></div></div>
+              <div class="eq-freq-label">16kHz</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Tone Generator, Master Routing & Dual VU Meters -->
+      <section class="right-column" style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Audio Tone Generator -->
+        <div class="instrument-panel">
+          <div class="panel-header">
+            <div class="panel-title"><i>[03]</i> AUDIO TONE GENERATOR</div>
+            <button class="source-toggle-btn" id="sourceToggleBtn">SOURCE: TONE GENERATOR</button>
+          </div>
+
+          <!-- Waveform Selection -->
+          <div class="waveform-selector">
+            <button class="wave-btn active" data-wave="sine">
+              <svg viewBox="0 0 24 12"><path d="M 0,6 Q 6,0 12,6 T 24,6"/></svg>
+              <span>SINE</span>
+            </button>
+
+            <button class="wave-btn" data-wave="square">
+              <svg viewBox="0 0 24 12"><path d="M 0,11 L 0,1 L 12,1 L 12,11 L 24,11"/></svg>
+              <span>SQR</span>
+            </button>
+
+            <button class="wave-btn" data-wave="triangle">
+              <svg viewBox="0 0 24 12"><path d="M 0,11 L 6,1 L 18,11 L 24,11"/></svg>
+              <span>TRI</span>
+            </button>
+
+            <button class="wave-btn" data-wave="sawtooth">
+              <svg viewBox="0 0 24 12"><path d="M 0,11 L 18,1 L 18,11 L 24,1"/></svg>
+              <span>SAW</span>
+            </button>
+
+            <button class="wave-btn" data-wave="white">
+              <span>W-NOISE</span>
+            </button>
+
+            <button class="wave-btn" data-wave="pink">
+              <span>P-NOISE</span>
+            </button>
+          </div>
+
+          <!-- Generator Control Knobs & Presets -->
+          <div class="generator-controls-row">
+            <div class="knob-control-group" id="freqKnob">
+              <div class="knob-label">COARSE FREQ</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="freqBadge">440 Hz</div>
+            </div>
+
+            <div class="knob-control-group" id="multKnob">
+              <div class="knob-label">DECADE MULT</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="multBadge">×1.0</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="preset-pills">
+                <button class="preset-pill" data-freq="60">60 Hz</button>
+                <button class="preset-pill active" data-freq="440">440 Hz</button>
+                <button class="preset-pill" data-freq="1000">1 kHz</button>
+                <button class="preset-pill" data-freq="5000">5 kHz</button>
+              </div>
+
+              <button class="sweep-toggle-btn" id="sweepToggleBtn">
+                <span>AUTO FREQ SWEEP (20-10kHz)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master Level & Channel Routing -->
+        <div class="instrument-panel">
+          <div class="panel-header">
+            <div class="panel-title"><i>[04]</i> MASTER LEVEL & CHANNEL ROUTING</div>
+          </div>
+
+          <div class="master-routing-row">
+            <div class="knob-control-group" id="masterKnob">
+              <div class="knob-label">MASTER VRMS</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="masterBadge">1.50 Vrms</div>
+            </div>
+
+            <div class="knob-control-group" id="balanceKnob">
+              <div class="knob-label">BALANCE</div>
+              <div class="knob-outer"><div class="knob-dial"><div class="knob-pointer"></div></div></div>
+              <div class="knob-value-badge" id="balanceBadge">CENTER</div>
+            </div>
+
+            <!-- Illuminated SOLO / MUTE Bat Switches -->
+            <div class="channel-switches-group">
+              <div class="channel-column">
+                <div class="ch-title">CH 1 (LEFT)</div>
+                <button class="bat-btn solo" id="soloLBtn">SOLO</button>
+                <button class="bat-btn mute" id="muteLBtn">MUTE</button>
+              </div>
+
+              <div class="channel-column">
+                <div class="ch-title">CH 2 (RIGHT)</div>
+                <button class="bat-btn solo" id="soloRBtn">SOLO</button>
+                <button class="bat-btn mute" id="muteRBtn">MUTE</button>
+              </div>
+            </div>
+
+            <!-- DC Pin 5 Detector Math Pod -->
+            <div class="dc-detector-pod">
+              <div class="pod-title">DC PIN 5 DETECTOR</div>
+              <div class="pod-value" id="dcDetectorVal">2.12 V DC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUL-10 LM3915 Dual VU Meters -->
+        <div class="instrument-panel">
+          <div class="panel-header">
+            <div class="panel-title"><i>[05]</i> AUL-10 LM3915 DUAL VU METERS</div>
+            <div class="meter-mode-toggle">
+              <span>PIN 9 MODE:</span>
+              <div class="mode-btn-group">
+                <button class="mode-btn active" id="modeBarBtn">BAR (STRIP)</button>
+                <button class="mode-btn" id="modeDotBtn">DOT (FIRE PT)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="meters-dual-container">
+            <!-- Left Channel Meter -->
+            <div class="meter-channel">
+              <div class="meter-title">LEFT CHANNEL (CH 1)</div>
+              <div class="led-bar-ladder" id="leftLedBar">
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment yellow"></div>
+                <div class="led-segment yellow"></div>
+                <div class="led-segment red"></div>
+                <div class="led-segment red"></div>
+              </div>
+              <div class="meter-readout-pod" id="leftReadout">0.000 Vrms | -∞ dB</div>
+            </div>
+
+            <!-- Right Channel Meter -->
+            <div class="meter-channel">
+              <div class="meter-title">RIGHT CHANNEL (CH 2)</div>
+              <div class="led-bar-ladder" id="rightLedBar">
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment green"></div>
+                <div class="led-segment yellow"></div>
+                <div class="led-segment yellow"></div>
+                <div class="led-segment red"></div>
+                <div class="led-segment red"></div>
+              </div>
+              <div class="meter-readout-pod" id="rightReadout">0.000 Vrms | -∞ dB</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Drawer: Hardware Troubleshooting & Calibration Guide -->
+    <div class="drawer-toggle-bar" id="guideDrawerBtn">
+      <div class="drawer-toggle-title">🛠️ HARDWARE TROUBLESHOOTING & CALIBRATION MANUAL (LM3915 / AUL-10)</div>
+      <span>▼ OPEN</span>
+    </div>
+
+    <div class="guide-drawer-content" id="guideDrawerContent">
+      <h3>1. LM3915 Theoretical 3 dB Step Reference Table (1.50 Vrms Full-Scale)</h3>
+      <p>When input sensitivity trimmers are calibrated for 1.50 Vrms at 0 dB, each LED segment corresponds to the following thresholds:</p>
+      
+      <div id="refTableContainer"></div>
+
+      <div class="trimmer-sim-box">
+        <div class="trimmer-sim-header">🔧 INTERACTIVE PCB TRIMMER POTENTIOMETER SIMULATOR</div>
+        <p>Use these sliders to simulate turning the multi-turn trimmers on your AUL-10 PCB kit:</p>
+        <div style="display: flex; gap: 20px; margin-top: 10px;">
+          <div style="flex: 1;">
+            <label style="font-family: var(--font-mono); font-size: 0.72rem; color: #a0b2c6;">
+              Left PCB Trimmer Gain: <strong id="leftTrimLabel">100%</strong>
+            </label>
+            <input type="range" id="leftTrimSlider" min="0.1" max="2.0" step="0.05" value="1.0" style="width: 100%;">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-family: var(--font-mono); font-size: 0.72rem; color: #a0b2c6;">
+              Right PCB Trimmer Gain: <strong id="rightTrimLabel">100%</strong>
+            </label>
+            <input type="range" id="rightTrimSlider" min="0.1" max="2.0" step="0.05" value="1.0" style="width: 100%;">
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 16px;">2. Step-by-Step Trimmer Calibration Procedure</h3>
+      <ol style="margin-left: 20px; margin-top: 6px;">
+        <li>Connect the Raspberry Pi 4 3.5mm audio output (or USB DAC) to the input of your AUL-10 VU meter boards.</li>
+        <li>Turn ON the bench power switch. Select <strong>Sine wave</strong>, set frequency to <strong>1 kHz</strong>, and turn Master Vrms to <strong>1.50 Vrms (100%)</strong>.</li>
+        <li>Adjust the blue multi-turn trimmer potentiometer on each AUL-10 PCB until <strong>LED 10 (0 dB Red)</strong> just lights up solid.</li>
+        <li>Step the Master Vrms knob down in 3 dB increments (e.g. 1.06V for -3 dB, 0.75V for -6 dB) and verify that the physical LEDs turn off sequentially.</li>
+      </ol>
+
+      <h3 style="margin-top: 16px;">3. MOD Jumper & Raspberry Pi USB Audio Isolation</h3>
+      <ul>
+        <li><strong>Bar Mode (Pin 9 to V+):</strong> MOD jumper closed. All LEDs from 1 up to current level light up.</li>
+        <li><strong>Dot Mode (Pin 9 Floating):</strong> MOD jumper open. Only the single topmost active LED lights up.</li>
+        <li><strong>Raspberry Pi alsamixer:</strong> Open terminal and run <code>alsamixer</code> to verify DAC volume is set to 100% (0 dB) without software attenuation.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/oscilloscope.js"></script>
+  <script src="js/meters.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
