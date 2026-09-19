@@ -2,4 +2,4 @@
 # On Raspberry Pi OS, gpiozero and RPi.GPIO are usually pre-installed.
 gpiozero>=1.6.2
 RPi.GPIO>=0.7.0; sys_platform == 'linux'
-pytest>=7.0.0
+pytest>=9.1.1
