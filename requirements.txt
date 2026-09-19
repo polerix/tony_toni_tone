@@ -1,5 +1,5 @@
 # LM3915 Dual VU Meter Calibration Bench Dependencies
 # On Raspberry Pi OS, gpiozero and RPi.GPIO are usually pre-installed.
-gpiozero>=1.6.2
+gpiozero>=2.0.1.post3
 RPi.GPIO>=0.7.0; sys_platform == 'linux'
 pytest>=7.0.0
